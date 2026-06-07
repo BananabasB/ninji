@@ -1,7 +1,7 @@
 <picture>
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/qwonkmusic/qwonkmusic/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024%401x.png" type="image/png">
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/qwonkmusic/qwonkmusic/assets/Ninji%20Exports/Ninji-iOS-Dark-1024x1024%402x.png" type="image/png">
-  <img src="https://github.com/qwonkmusic/qwonkmusic/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024%401x.png" alt="Ninji" width="1024" height="1024">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024@1x.png" type="image/png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Dark-1024x1024@1x.png" type="image/png">
+  <img src="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024@1x.png" alt="Ninji" width="1024" height="1024">
 </picture>
 
 # Ninji
