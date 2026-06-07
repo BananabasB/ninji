@@ -1,0 +1,6 @@
+Vencord/
+.env
+.env.local
+.build/
+.xcode-derived-data/
+.DS_Store

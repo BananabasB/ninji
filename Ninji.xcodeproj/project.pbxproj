@@ -1,0 +1,280 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E20000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000002 /* ContentView.swift */; };
+		E20000000000000000000003 /* DiscordRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* DiscordRPC.swift */; };
+		E20000000000000000000004 /* NinjiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000004 /* NinjiApp.swift */; };
+		E20000000000000000000005 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* WebView.swift */; };
+		E20000000000000000000006 /* TrackObserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000006 /* TrackObserver.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E10000000000000000000001 /* Ninji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ninji.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E10000000000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/ContentView.swift; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000003 /* DiscordRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/DiscordRPC.swift; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000004 /* NinjiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/NinjiApp.swift; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000005 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/WebView.swift; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000006 /* TrackObserver.js */ = {isa = PBXFileReference; lastKnownFileType = text.javascript; path = Sources/Ninji/TrackObserver.js; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000007 /* Ninji.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.icon; path = Ninji.icon; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E30000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E00000000000000000000009 = {
+			isa = PBXGroup;
+			children = (
+				E0000000000000000000000B /* Sources */,
+				E0000000000000000000000C /* Resources */,
+				E0000000000000000000000A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E0000000000000000000000A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000001 /* Ninji.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E0000000000000000000000B /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000004 /* NinjiApp.swift */,
+				E10000000000000000000002 /* ContentView.swift */,
+				E10000000000000000000005 /* WebView.swift */,
+				E10000000000000000000003 /* DiscordRPC.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		E0000000000000000000000C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E10000000000000000000006 /* TrackObserver.js */,
+				E10000000000000000000007 /* Ninji.icon */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E00000000000000000000005 /* Ninji */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E00000000000000000000006 /* Build configuration list for PBXNativeTarget "Ninji" */;
+			buildPhases = (
+				E30000000000000000000001 /* Sources */,
+				E30000000000000000000002 /* Frameworks */,
+				E30000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Ninji;
+			productName = Ninji;
+			productReference = E10000000000000000000001 /* Ninji.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E00000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					E00000000000000000000005 = {
+						CreatedOnToolsVersion = 26.0;
+					};
+				};
+			};
+			buildConfigurationList = E00000000000000000000002 /* Build configuration list for PBXProject "Ninji" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E00000000000000000000009;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 56;
+			productRefGroup = E0000000000000000000000A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E00000000000000000000005 /* Ninji */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E30000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E20000000000000000000006 /* TrackObserver.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E30000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E20000000000000000000004 /* NinjiApp.swift in Sources */,
+				E20000000000000000000002 /* ContentView.swift in Sources */,
+				E20000000000000000000005 /* WebView.swift in Sources */,
+				E20000000000000000000003 /* DiscordRPC.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E00000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnabasbodily.ninji;
+				PRODUCT_NAME = Ninji;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		E00000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_LANGUAGE = en;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnabasbodily.ninji;
+				PRODUCT_NAME = Ninji;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Release;
+		};
+		E00000000000000000000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnabasbodily.ninji;
+				PRODUCT_NAME = Ninji;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Debug;
+		};
+		E00000000000000000000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.barnabasbodily.ninji;
+				PRODUCT_NAME = Ninji;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SUPPORTED_PLATFORMS = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E00000000000000000000002 /* Build configuration list for PBXProject "Ninji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E00000000000000000000003 /* Debug */,
+				E00000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E00000000000000000000006 /* Build configuration list for PBXNativeTarget "Ninji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E00000000000000000000007 /* Debug */,
+				E00000000000000000000008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E00000000000000000000001 /* Project object */;
+}
