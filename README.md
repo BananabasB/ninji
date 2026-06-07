@@ -1,7 +1,7 @@
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024@1x.png" type="image/png">
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Dark-1024x1024@1x.png" type="image/png">
-  <img src="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024@1x.png" alt="Ninji" width="1024" height="1024">
+  <img src="https://raw.githubusercontent.com/BananabasB/ninji/master/assets/Ninji%20Exports/Ninji-iOS-Default-1024x1024@1x.png" alt="Ninji" width="80" height="80">
 </picture>
 
 # Ninji
