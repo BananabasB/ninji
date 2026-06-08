@@ -1,4 +1,34 @@
 /* themes/injector.js
+ * Simple CSS-only userstyle injector. Inserts the Catppuccin Mocha CSS into the page as a <style> tag.
+ * No runtime mapping or computed-color work — pure userstyle.
+ */
+(function(){
+  const css = `:root {
+  --color-bg: #1E1E2E;
+  --color-surface: #11111B;
+  --color-muted: #7287A1;
+  --color-text: #CAD3F5;
+  --color-primary: #89B4FA;
+  --color-accent: #94E2D5;
+  --color-success: #ABE9B3;
+  --color-warning: #F9E2AF;
+  --color-danger: #F38BA8;
+  --color-border: #313244;
+}`;
+
+  try{
+    const id = 'userstyle-catppuccin';
+    if(!document.getElementById(id)){
+      const s = document.createElement('style');
+      s.id = id;
+      s.textContent = css;
+      document.documentElement.appendChild(s);
+      console.log('userstyle: Catppuccin CSS injected');
+    }
+  }catch(e){ console.error('userstyle inject error', e); }
+
+  return; // stop — no runtime mapping or observers
+})();
  * Runtime theme injector for webview-based apps.
  * - Builds a color-value → CSS variable map from computed styles
  * - Sets semantic tokens (Catppuccin Mocha sample) on :root
@@ -6,6 +36,33 @@
  * - Reapplies on DOM mutation (debounced and change-guarded to avoid spam)
  */
 (function(){
+  // Simple CSS-only userstyle injector: inject themes/catppuccin.mocha.css content
+  const css = `:root {
+  --color-bg: #1E1E2E;
+  --color-surface: #11111B;
+  --color-muted: #7287A1;
+  --color-text: #CAD3F5;
+  --color-primary: #89B4FA;
+  --color-accent: #94E2D5;
+  --color-success: #ABE9B3;
+  --color-warning: #F9E2AF;
+  --color-danger: #F38BA8;
+  --color-border: #313244;
+}`;
+
+  try{
+    const id = 'userstyle-catppuccin';
+    if(!document.getElementById(id)){
+      const s = document.createElement('style');
+      s.id = id;
+      s.textContent = css;
+      document.documentElement.appendChild(s);
+      console.log('userstyle: Catppuccin CSS injected');
+    }
+  }catch(e){ console.error('userstyle inject error', e); }
+
+  return; // stop — no runtime mapping or observers
+})();
   const normalize = (c) => {
     try{
       const d = document.createElement('div');

@@ -1,5 +1,35 @@
 /* Sources/Ninji/injector.js
  * Copied into app resources so WebView can inject it at runtime.
+ * Simple CSS-only userstyle injector: inject Catppuccin Mocha tokens as :root variables.
+ */
+(function(){
+  const css = `:root {
+  --color-bg: #1E1E2E;
+  --color-surface: #11111B;
+  --color-muted: #7287A1;
+  --color-text: #CAD3F5;
+  --color-primary: #89B4FA;
+  --color-accent: #94E2D5;
+  --color-success: #ABE9B3;
+  --color-warning: #F9E2AF;
+  --color-danger: #F38BA8;
+  --color-border: #313244;
+}`;
+
+  try{
+    const id = 'userstyle-catppuccin';
+    if(!document.getElementById(id)){
+      const s = document.createElement('style');
+      s.id = id;
+      s.textContent = css;
+      document.documentElement.appendChild(s);
+      console.log('userstyle (bundled): Catppuccin CSS injected');
+    }
+  }catch(e){ console.error('userstyle inject error', e); }
+
+  return; // no runtime mapping
+})();
+ * Copied into app resources so WebView can inject it at runtime.
  */
 (function(){
   const normalize = (c) => {
