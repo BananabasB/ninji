@@ -8,8 +8,9 @@ final class UpdaterController {
     private let updaterController: SPUStandardUpdaterController
     private let userDefaults: UserDefaults
     
-    // App cast feed URL - you'll need to host this on your server
-    private let feedURL = URL(string: "https://your-server.com/ninji/appcast.xml")!
+    // App cast feed URL - GitHub Releases
+    // Replace with your actual GitHub repo
+    private let feedURL = URL(string: "https://github.com/BananabasB/ninji/releases/latest/download/appcast.xml")!
     
     private init() {
         // Use a custom UserDefaults suite for Sparkle to avoid conflicts

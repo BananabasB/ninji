@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>development</string>
+	<!-- For production distribution, use "app-store", "ad-hoc", or "enterprise" -->
+	<!-- <key>method</key> -->
+	<!-- <string>app-store</string> -->
+	
+	<key>teamID</key>
+	<string>YOUR_TEAM_ID</string>
+	
+	<key>uploadBitcode</key>
+	<false/>
+	
+	<key>compileBitcode</key>
+	<false/>
+	
+	<key>uploadSymbols</key>
+	<false/>
+	
+	<key>thinning</key>
+	<string>&lt;none&gt;</string>
+	
+	<!-- For notarization (uncomment when ready) -->
+	<!-- <key>signingStyle</key> -->
+	<!-- <string>manual</string> -->
+	<!-- <key>signingCertificate</key> -->
+	<!-- <string>Developer ID Application: Your Name</string> -->
+	<!-- <key>provisioningProfiles</key> -->
+	<!-- <dict/> -->
+</dict>
+</plist>
