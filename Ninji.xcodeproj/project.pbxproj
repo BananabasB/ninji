@@ -16,6 +16,7 @@
 		E20000000000000000000004 /* Sources/Ninji/NinjiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */; };
 		E20000000000000000000005 /* Sources/Ninji/WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* Sources/Ninji/WebView.swift */; };
 		E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000006 /* Sources/Ninji/TrackObserver.js */; };
+		E20000000000000000000007 /* Ninji.icon in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000007 /* Ninji.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -147,6 +148,7 @@
 			files = (
 				1958284F2FD713F900E0410C /* appcast.example.xml in Resources */,
 				E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */,
+				E20000000000000000000007 /* Ninji.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +186,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_CFBundleIconName = Ninji;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -214,6 +217,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_CFBundleIconName = Ninji;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -233,6 +237,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Manual;
@@ -240,6 +245,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_CFBundleIconName = Ninji;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -260,6 +266,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Ninji;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Manual;
@@ -267,6 +274,7 @@
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = Ninji;
+				INFOPLIST_KEY_CFBundleIconName = Ninji;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
