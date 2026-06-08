@@ -42,6 +42,62 @@
     '--color-border': '#313244'
   };
 
+  // Fallback map derived from the hashed variables you provided in the web app CSS.
+  const knownHashedColors = {
+    '--_1hr2ce07': '#FFFFFF',
+    '--_1hr2ce08': '#111111',
+    '--_1hr2ce09': '#282828',
+    '--_1hr2ce0a': '#3C3C3C',
+    '--_1hr2ce0b': '#E60012',
+    '--_1hr2ce0c': '#006BFF',
+    '--_1hr2ce0d': '#F7CB00',
+    '--_1hr2ce0e': '#00A000',
+    '--_1hr2ce0f': '#F4F4F41A',
+    '--_1hr2ce0g': '#1A1A1AB8',
+    '--_1hr2ce0h': '#1A1A1AA3',
+    '--_1hr2ce0i': '#00000099',
+    '--_1hr2ce0j': '#00000099',
+    '--_1hr2ce0k': '#00000000',
+    '--_1hr2ce0l': '#000000cb',
+    '--_1hr2ce0m': '#FF4128',
+    '--_1hr2ce0n': '#1D1D1D',
+    '--_1hr2ce0o': '#F4F4F40A',
+    '--_1hr2ce0p': '#1F1F1F',
+    '--_1hr2ce0q': '#F4F4F414',
+    '--_1hr2ce0r': '#F4F4F41A',
+    '--_1hr2ce0s': '#F4F4F429',
+    '--_1hr2ce0t': '#F4F4F41A',
+    '--_1hr2ce0u': '#1111111A',
+    '--_1hr2ce0v': '#F4F4F433',
+    '--_1hr2ce0w': '#F4F4F426',
+    '--_1hr2ce0x': '#11111100',
+    '--_1hr2ce0y': '#1111110d',
+    '--_1hr2ce0z': '#11111133',
+    '--_1hr2ce010': '#11111159',
+    '--_1hr2ce011': '#11111180',
+    '--_1hr2ce012': '#28282800',
+    '--_1hr2ce013': '#282828',
+    '--_1hr2ce014': '#1D1D1D00',
+    '--_1hr2ce015': '#1D1D1D',
+    '--_1hr2ce016': '#006BFF4D',
+    '--_1hr2ce017': '#606060',
+    '--_1hr2ce018': '#303030'
+  };
+
+  // A best-effort semantic guess mapping from common colors to tokens — used when we map the hashed vars directly
+  const colorToTokenGuess = {
+    '#ffffff': '--color-text',
+    '#111111': '--color-bg',
+    '#282828': '--color-surface',
+    '#3c3c3c': '--color-border',
+    '#e60012': '--color-danger',
+    '#006bff': '--color-primary',
+    '#006bff4d': '--color-primary',
+    '#f7cb00': '--color-warning',
+    '#00a000': '--color-success',
+    '#ff4128': '--color-danger'
+  };
+
   let lastContent = null;
   let lastMappingsJson = null;
   let applyTimeout = null;
@@ -58,9 +114,36 @@
 
     // for each semantic token, find any existing hashed vars that match the same computed value
     const mappings = {};
+
+    // Build a fallback normalized map from knownHashedColors
+    const fallbackValueMap = {};
+    for(const [hv, hex] of Object.entries(knownHashedColors)){
+      try{
+        const normHex = normalize(hex);
+        (fallbackValueMap[normHex] = fallbackValueMap[normHex] || []).push(hv);
+      }catch(e){ /* ignore */ }
+    }
+
     for(const [token, val] of Object.entries(theme)){
       const norm = normalize(val);
-      const vars = (valueMap[norm] || []).filter(hv => hv !== token); // avoid self-mapping
+      let vars = (valueMap[norm] || []).filter(hv => hv !== token); // avoid self-mapping
+
+      // If no vars found by computed-style, try fallbackValueMap (from provided hex list)
+      if(vars.length === 0 && fallbackValueMap[norm]){
+        vars = fallbackValueMap[norm].slice();
+      }
+
+      // If still empty, try best-effort guess: map known hexes whose normalized hex matches token guess
+      if(vars.length === 0){
+        const guessed = [];
+        for(const [hv, hex] of Object.entries(knownHashedColors)){
+          const key = hex.toLowerCase();
+          const guess = colorToTokenGuess[key];
+          if(guess === token) guessed.push(hv);
+        }
+        if(guessed.length) vars = guessed.slice();
+      }
+
       mappings[token] = vars.slice();
       for(const hv of vars) styleLines.push(`${hv}: var(${token}) !important`);
     }
