@@ -4,3 +4,6 @@ Vencord/
 .build/
 .xcode-derived-data/
 .DS_Store
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
