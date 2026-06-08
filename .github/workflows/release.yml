@@ -43,6 +43,24 @@ jobs:
           if [ -d "$APP_PATH" ]; then
             # Copy the .app into output for packaging (avoids needing exportArchive/signing)
             ditto "$APP_PATH" "output/Ninji.app"
+
+            # Determine version from the tag (REF_NAME like v0.2.1)
+            REF_NAME=${GITHUB_REF#refs/tags/}
+            VERSION=${REF_NAME#v}
+
+            # Ensure CFBundleShortVersionString exists and is set to the release version
+            INFO_PLIST="output/Ninji.app/Contents/Info.plist"
+            if /usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" "$INFO_PLIST" >/dev/null 2>&1; then
+              /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$INFO_PLIST" || true
+            else
+              /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $VERSION" "$INFO_PLIST" || true
+            fi
+
+            # Ad-hoc sign the app so Sparkle can operate (no Apple Developer account required)
+            echo "Ad-hoc signing output/Ninji.app"
+            codesign --force --deep --options runtime --sign - "output/Ninji.app" || true
+            codesign --verify --deep --strict --verbose=4 "output/Ninji.app" || true
+
           else
             echo "ERROR: built app not found in archive"
             ls -la Ninji.xcarchive || true
