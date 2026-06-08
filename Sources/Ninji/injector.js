@@ -42,6 +42,10 @@
     '--color-border': '#313244'
   };
 
+  let lastContent = null;
+  let lastMappingsJson = null;
+  let applyTimeout = null;
+
   const applyTheme = () => {
     const valueMap = buildValueMap();
     const styleLines = [];
@@ -53,16 +57,20 @@
     const mappings = {};
     for(const [token, val] of Object.entries(theme)){
       const norm = normalize(val);
-      const vars = valueMap[norm] || [];
+      const vars = (valueMap[norm] || []).filter(hv => hv !== token); // avoid self-mapping
       mappings[token] = vars.slice();
       for(const hv of vars) styleLines.push(`${hv}: var(${token}) !important`);
     }
 
+    const content = `:root{${styleLines.join(';')}}`;
     let s = document.getElementById('theme-injector');
     if(!s){ s = document.createElement('style'); s.id = 'theme-injector'; document.head.appendChild(s); }
-    s.textContent = `:root{${styleLines.join(';')}}`;
 
-    // Runtime logging to help debug injection
+    // Only update if content actually changed to avoid triggering infinite mutation loops
+    if(s.textContent === content) return;
+    s.textContent = content;
+
+    // Runtime logging to help debug injection (only when changed)
     try{
       console.log(`theme-injector: applied ${Object.keys(theme).length} semantic tokens, ${styleLines.length} style rules`);
       let anyMatched = false;
@@ -71,19 +79,27 @@
       }
       if(!anyMatched) console.log('theme-injector: no hashed variables matched by color — semantic tokens added only');
     }catch(e){ /* ignore logging errors */ }
+
+    lastContent = content;
+    lastMappingsJson = JSON.stringify(mappings);
+  };
+
+  const scheduleApply = (delay = 120) => {
+    if(applyTimeout) clearTimeout(applyTimeout);
+    applyTimeout = setTimeout(() => { try{ applyTheme(); } catch(e){ console.error('theme-injector apply error', e); } applyTimeout = null; }, delay);
   };
 
   const safeApply = () => {
     try{
-      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyTheme);
-      else applyTheme();
+      if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => scheduleApply(10));
+      else scheduleApply(10);
     }catch(e){ console.error('theme-injector error', e); }
   };
 
   safeApply();
-  const ob = new MutationObserver(()=>applyTheme());
+  const ob = new MutationObserver(() => scheduleApply());
   ob.observe(document.documentElement, { attributes: true, childList: true, subtree: true });
 
   // expose for debugging
-  window.__themeInjector = { applyTheme };
+  window.__themeInjector = { applyTheme, scheduleApply };
 })();
