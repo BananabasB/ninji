@@ -18,7 +18,7 @@ struct NinjiApp: App {
         }
 
         .commands {
-            CommandMenu("Ninji") {
+            CommandGroup(before: .newItem) {
                 Button("Open Shared Playlist…") {
                     appDelegate.openSharedPlaylist()
                 }
