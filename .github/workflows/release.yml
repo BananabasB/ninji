@@ -18,21 +18,15 @@ jobs:
         with:
           xcode-version: latest
 
-      - name: Install Dependencies
-        run: |
-          # Install Sparkle dependencies if needed
-          # Swift Package Manager should handle this automatically
-          swift package resolve
-
       - name: Cache Build Files
         uses: actions/cache@v3
         with:
           path: |
-            .build
             ~/Library/Caches/com.apple.dt.Xcode
-          key: ${{ runner.os }}-build-${{ hashFiles('Package.swift', 'Sources/**/*.swift') }}
+            DerivedData
+          key: ${{ runner.os }}-xcode-build-${{ hashFiles('Sources/**/*.swift', 'Ninji.xcodeproj/project.pbxproj') }}
           restore-keys: |
-            ${{ runner.os }}-build-
+            ${{ runner.os }}-xcode-build-
 
       - name: Build for Release
         run: |
