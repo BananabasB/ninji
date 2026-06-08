@@ -28,6 +28,12 @@ final class UpdaterController {
         configuration.showsUIForAutomaticCheckOnLaunch = true
         configuration.prefersSparkleHostForAutomaticUpdates = true
         
+        // For unsigned apps (no Developer Program), allow unsigned updates
+        // ⚠️ Security warning: This bypasses signature verification!
+        // Only use this for testing without Developer Program
+        configuration.ignoresSystemProxySettings = false
+        configuration.requiresSignatureVerification = false
+        
         // Create the updater controller
         updaterController = SPUStandardUpdaterController(
             configuration: configuration,
