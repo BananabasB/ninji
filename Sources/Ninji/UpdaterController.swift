@@ -6,24 +6,17 @@ final class UpdaterController: NSObject, ObservableObject {
     static let shared = UpdaterController()
     
     private var updater: SPUUpdater!
-    private var userDefaults: UserDefaults
-
+    
     // App cast feed URL - GitHub Releases
     // Replace with your actual GitHub repo
     private let feedURL = URL(string: "https://github.com/BananabasB/ninji/releases/latest/download/appcast.xml")!
     
     override init() {
-        // Use a custom UserDefaults suite for Sparkle to avoid conflicts
-        userDefaults = UserDefaults(suiteName: "com.barnabasbodily.Ninji.sparkle") ?? .standard
-        
         super.init()
         
-        // Create the updater
-        updater = SPUUpdater(
-            source: SPUAppcastSource(appCastURL: feedURL),
-            userDefaults: userDefaults,
-            delegate: self
-        )
+        // Create the updater - Sparkle 2.x uses SUAppcastSource
+        let source = SUAppcastSource(appCastURL: feedURL)
+        updater = SPUUpdater(source: source, delegate: self)
     }
     
     /// Start the updater - call this when the app launches
@@ -46,29 +39,25 @@ final class UpdaterController: NSObject, ObservableObject {
 
 // MARK: - Sparkle Delegate
 
-extension UpdaterController: SPUUpdaterDelegate {
+extension UpdaterController: SUUpdaterDelegate {
     
-    func updater(_ updater: SPUUpdater, willStartDownloadingUpdate update: SPUUpdate) {
-        print("Starting download of update: \(update.version)")
+    // Update found
+    func updater(_ updater: SUUpdater, foundUpdate update: SUUpdate) {
+        print("Update found: \(update.version)")
     }
     
-    func updater(_ updater: SPUUpdater, didDownloadUpdate update: SPUUpdate, at path: String) {
-        print("Update downloaded to: \(path)")
-    }
-    
-    func updater(_ updater: SPUUpdater, didFailToDownloadUpdateWithError error: Error) {
-        print("Download failed: ", error.localizedDescription)
-    }
-    
-    func updater(_ updater: SPUUpdater, didFailToInstallUpdateWithError error: Error) {
-        print("Installation failed: ", error.localizedDescription)
-    }
-    
-    func updaterDidNotFindUpdate(_ updater: SPUUpdater) {
+    // No update found
+    func updaterDidNotFindUpdate(_ updater: SUUpdater) {
         print("No update found")
     }
     
-    func updater(_ updater: SPUUpdater, foundUpdate update: SPUUpdate) {
-        print("Update found: \(update.version)")
+    // Download failed
+    func updater(_ updater: SUUpdater, failedToDownloadUpdate update: SUUpdate, withError error: Error) {
+        print("Download failed: ", error.localizedDescription)
+    }
+    
+    // Installation failed  
+    func updater(_ updater: SUUpdater, failedToInstallUpdate update: SUUpdate, withError error: Error) {
+        print("Installation failed: ", error.localizedDescription)
     }
 }
