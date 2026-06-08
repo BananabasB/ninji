@@ -54,6 +54,11 @@ jobs:
           cd output
           # Create ZIP of the app
           ditto -c -k --sequesterRsrc --keepParent Ninji.app Ninji-${{ github.ref_name }}.zip
+
+          # Create compressed DMG (UDZO)
+          # Uses hdiutil to package the app; unsigned. Adjust signing as needed.
+          hdiutil create -volname "Ninji" -srcfolder Ninji.app -ov -format UDZO Ninji-${{ github.ref_name }}.dmg
+
           # Go back to root
           cd ..
 
@@ -69,52 +74,63 @@ jobs:
       - name: Generate AppCast XML
         id: appcast
         run: |
-          # Get the current date in RFC 2822 format
-          PublishDate=$(date -u +"%a, %d %b %Y %H:%M:%S GMT")
-          
-          # Extract version from tag (remove 'v' prefix)
-          VERSION=${GITHUB_REF_NAME#v}
-          
-          # Get file size
-          ZIP_FILE="output/Ninji-${{ github.ref_name }}.zip"
-          FILE_SIZE=$(stat -f%z "$ZIP_FILE")
-          
-          # Create appcast directory
+          # Determine tag name and version (strip refs/tags/ prefix)
+          REF_NAME=${GITHUB_REF#refs/tags/}
+          VERSION=${REF_NAME#v}
+
+          # Paths
+          ZIP_FILE="output/Ninji-${REF_NAME}.zip"
+          DMG_FILE="output/Ninji-${REF_NAME}.dmg"
+
+          # Get file size if zip exists (may be created later in workflow)
+          if [ -f "$ZIP_FILE" ]; then
+            FILE_SIZE=$(stat -f%z "$ZIP_FILE")
+          else
+            FILE_SIZE=0
+          fi
+
           mkdir -p deploy
-          
-          # Create appcast.xml with proper Sparkle namespaces
-          cat > deploy/appcast.xml << EOF
-<?xml version="1.0" encoding="utf-8"?>
+
+          # Use Python to generate well-formed XML (avoids heredoc indentation issues)
+          python3 - "$VERSION" "$REF_NAME" "$FILE_SIZE" "$GITHUB_REPOSITORY" "$GITHUB_SHA" <<'PY'
+import sys
+version, ref, file_size, repo, sha = sys.argv[1:6]
+from datetime import datetime
+pubdate = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
+content = f'''<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
     <channel>
         <title>Ninji</title>
         <description>Nintendo Music desktop wrapper</description>
         <language>en</language>
         <item>
-            <title>Version ${VERSION}</title>
-            <pubDate>${PublishDate}</pubDate>
-            <sparkle:version>${VERSION}</sparkle:version>
-            <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
+            <title>Version {version}</title>
+            <pubDate>{pubdate}</pubDate>
+            <sparkle:version>{version}</sparkle:version>
+            <sparkle:shortVersionString>{version}</sparkle:shortVersionString>
             <description>
                 <![CDATA[
-                    <h1>Ninji ${VERSION}</h1>
-                    <p>Release ${{ github.ref_name }}</p>
-                    <p>Built from commit ${{ github.sha }}</p>
+                    <h1>Ninji {version}</h1>
+                    <p>Release {ref}</p>
+                    <p>Built from commit {sha}</p>
                 ]]>
             </description>
             <enclosure 
-                url="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/Ninji-${{ github.ref_name }}.zip" 
-                length="${FILE_SIZE}" 
+                url="https://github.com/{repo}/releases/download/{ref}/Ninji-{ref}.zip" 
+                length="{file_size}" 
                 type="application/octet-stream" 
                 sparkle:editable="true"/>
         </item>
     </channel>
 </rss>
-EOF
-          
-          # Output the appcast for upload
+'''
+open('deploy/appcast.xml','w', encoding='utf-8').write(content)
+PY
+
+          # Expose outputs for subsequent steps
           echo "appcast_path=deploy/appcast.xml" >> $GITHUB_OUTPUT
           echo "zip_path=$ZIP_FILE" >> $GITHUB_OUTPUT
+          echo "dmg_path=$DMG_FILE" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Upload Release Assets
@@ -122,6 +138,7 @@ EOF
         with:
           files: |
             output/Ninji-${{ github.ref_name }}.zip
+            output/Ninji-${{ github.ref_name }}.dmg
             deploy/appcast.xml
           name: ${{ github.ref_name }}
           prerelease: false
