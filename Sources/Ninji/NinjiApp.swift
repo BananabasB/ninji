@@ -4,8 +4,6 @@ import Sparkle
 @main
 struct NinjiApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    @StateObject private var updaterController = UpdaterController.shared
 
     var body: some Scene {
         WindowGroup {

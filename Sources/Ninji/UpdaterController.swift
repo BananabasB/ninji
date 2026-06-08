@@ -2,7 +2,7 @@ import Sparkle
 import SwiftUI
 
 /// Handles Sparkle framework integration for automatic updates
-final class UpdaterController {
+final class UpdaterController: ObservableObject {
     static let shared = UpdaterController()
     
     private let updaterController: SPUStandardUpdaterController
@@ -60,23 +60,23 @@ final class UpdaterController {
 
 /// Legacy AppDelegate wrapper for Sparkle compatibility
 class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
-    func updater(_ updater: SPUUpdater, performing action: SPUUpdaterAction) {
+    func updater(_ updater: SPUUpdater, performing action: SPUStandardUpdaterAction) {
         // Handle different update actions
-        switch performing {
-        case .download:
+        switch action {
+        case .downloading:
             print("Starting download...")
-        case .install:
+        case .installing:
             print("Starting installation...")
         default:
             break
         }
     }
     
-    func updater(_ updater: SPUUpdater, failedToDownloadUpdateWithError error: Error) {
+    func updater(_ updater: SPUUpdater, didFailToDownloadUpdateWithError error: Error) {
         print("Download failed: ", error.localizedDescription)
     }
     
-    func updater(_ updater: SPUUpdater, failedToInstallUpdateWithError error: Error) {
+    func updater(_ updater: SPUUpdater, didFailToInstallUpdateWithError error: Error) {
         print("Installation failed: ", error.localizedDescription)
     }
     
@@ -84,7 +84,7 @@ class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
         print("No update found")
     }
     
-    func updaterFoundUpdate(_ updater: SPUUpdater, update: SPUUpdate) {
+    func updater(_ updater: SPUUpdater, foundUpdate update: SPUUpdate) {
         print("Update found: ", update.version)
     }
 }
