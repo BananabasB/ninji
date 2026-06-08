@@ -91,41 +91,10 @@ jobs:
 
           mkdir -p deploy
 
-          # Use Python to generate well-formed XML (avoids heredoc indentation issues)
-          python3 - "$VERSION" "$REF_NAME" "$FILE_SIZE" "$GITHUB_REPOSITORY" "$GITHUB_SHA" <<'PY'
-import sys
-version, ref, file_size, repo, sha = sys.argv[1:6]
-from datetime import datetime
-pubdate = datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-content = f'''<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
-    <channel>
-        <title>Ninji</title>
-        <description>Nintendo Music desktop wrapper</description>
-        <language>en</language>
-        <item>
-            <title>Version {version}</title>
-            <pubDate>{pubdate}</pubDate>
-            <sparkle:version>{version}</sparkle:version>
-            <sparkle:shortVersionString>{version}</sparkle:shortVersionString>
-            <description>
-                <![CDATA[
-                    <h1>Ninji {version}</h1>
-                    <p>Release {ref}</p>
-                    <p>Built from commit {sha}</p>
-                ]]>
-            </description>
-            <enclosure 
-                url="https://github.com/{repo}/releases/download/{ref}/Ninji-{ref}.zip" 
-                length="{file_size}" 
-                type="application/octet-stream" 
-                sparkle:editable="true"/>
-        </item>
-    </channel>
-</rss>
-'''
-open('deploy/appcast.xml','w', encoding='utf-8').write(content)
-PY
+          # Use base64-encoded Python script to avoid YAML heredoc/implicit-key parsing issues
+          PYTHON_B64="aW1wb3J0IHN5cwpmcm9tIGRhdGV0aW1lIGltcG9ydCBkYXRldGltZQp2ZXJzaW9uLCByZWYsIGZpbGVfc2l6ZSwgcmVwbywgc2hhID0gc3lzLmFyZ3ZbMTo2XQpwdWJkYXRlID0gZGF0ZXRpbWUudXRjbm93KCkuc3RyZnRpbWUoIiVhLCAlZCAlYiAlWSAlSDolTTolUyBHTVQiKQpjb250ZW50ID0gZicnJzw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8+Cjxyc3MgdmVyc2lvbj0iMi4wIiB4bWxuczpzcGFya2xlPSJodHRwOi8vd3d3LmFuZHltYXR1c2NoYWsub3JnL3htbC1uYW1lc3BhY2VzL3NwYXJrbGUiPgogICAgPGNoYW5uZWw+CiAgICAgICAgPHRpdGxlPk5pbmppPC90aXRsZT4KICAgICAgICA8ZGVzY3JpcHRpb24+TmludGVuZG8gTXVzaWMgZGVza3RvcCB3cmFwcGVyPC9kZXNjcmlwdGlvbj4KICAgICAgICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogICAgICAgIDxpdGVtPgogICAgICAgICAgICA8dGl0bGU+VmVyc2lvbiB7dmVyc2lvbn08L3RpdGxlPgogICAgICAgICAgICA8cHViRGF0ZT57cHViZGF0ZX08L3B1YkRhdGU+CiAgICAgICAgICAgIDxzcGFya2xlOnZlcnNpb24+e3ZlcnNpb259PC9zcGFya2xlOnZlcnNpb24+CiAgICAgICAgICAgIDxzcGFya2xlOnNob3J0VmVyc2lvblN0cmluZz57dmVyc2lvbn08L3NwYXJrbGU6c2hvcnRWZXJzaW9uU3RyaW5nPgogICAgICAgICAgICA8ZGVzY3JpcHRpb24+CiAgICAgICAgICAgICAgICA8IVtDREFUQVsKICAgICAgICAgICAgICAgICAgICA8aDE+Tmluamkge3ZlcnNpb259PC9oMT4KICAgICAgICAgICAgICAgICAgICA8cD5SZWxlYXNlIHtyZWZ9PC9wPgogICAgICAgICAgICAgICAgICAgIDxwPkJ1aWx0IGZyb20gY29tbWl0IHtzaGF9PC9wPgogICAgICAgICAgICAgICAgXV0+CiAgICAgICAgICAgIDwvZGVzY3JpcHRpb24+CiAgICAgICAgICAgIDxlbmNsb3N1cmUgCiAgICAgICAgICAgICAgICB1cmw9Imh0dHBzOi8vZ2l0aHViLmNvbS97cmVwb30vcmVsZWFzZXMvZG93bmxvYWQve3JlZn0vTmluamkte3JlZn0uemlwIiAKICAgICAgICAgICAgICAgIGxlbmd0aD0ie2ZpbGVfc2l6ZX0iIAogICAgICAgICAgICAgICAgdHlwZT0iYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtIiAKICAgICAgICAgICAgICAgIHNwYXJrbGU6ZWRpdGFibGU9InRydWUiLz4KICAgICAgICA8L2l0ZW0+CiAgICA8L2NoYW5uZWw+CjwvcnNzPgonJycKb3BlbignZGVwbG95L2FwcGNhc3QueG1sJywndycsIGVuY29kaW5nPSd1dGYtOCcpLndyaXRlKGNvbnRlbnQpCg=="
+          echo "$PYTHON_B64" | base64 --decode > /tmp/generate_appcast.py
+          python3 /tmp/generate_appcast.py "$VERSION" "$REF_NAME" "$FILE_SIZE" "$GITHUB_REPOSITORY" "$GITHUB_SHA"
 
           # Expose outputs for subsequent steps
           echo "appcast_path=deploy/appcast.xml" >> $GITHUB_OUTPUT
