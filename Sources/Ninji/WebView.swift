@@ -293,9 +293,34 @@ final class WebViewManager: NSObject, WKScriptMessageHandler {
             configuration.userContentController.addUserScript(trackObserverScript)
         }
 
-        // Attempt to inject themes/injector.js (falls back to bundled or repo themes directory)
+        // Attempt to inject themes/injector.js (try bundled resource first, then common runtime paths)
         if let injectorScript = makeInjectedResourceScript(named: "injector", fileExtension: "js", injectionTime: .atDocumentEnd) {
             configuration.userContentController.addUserScript(injectorScript)
+        } else {
+            // Try a few runtime locations useful during development
+            let fm = FileManager.default
+            var candidates: [String] = []
+            candidates.append(fm.currentDirectoryPath + "/themes/injector.js")
+            candidates.append(fm.currentDirectoryPath + "/../themes/injector.js")
+            if let res = Bundle.main.resourceURL?.appendingPathComponent("themes/injector.js").path {
+                candidates.append(res)
+            }
+            candidates.append(Bundle.main.bundlePath + "/Contents/Resources/themes/injector.js")
+
+            var injected = false
+            for path in candidates {
+                if fm.fileExists(atPath: path), let src = try? String(contentsOfFile: path, encoding: .utf8) {
+                    let userScript = WKUserScript(source: src, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+                    configuration.userContentController.addUserScript(userScript)
+                    print("Injected themes/injector.js from: \(path)")
+                    injected = true
+                    break
+                }
+            }
+
+            if !injected {
+                print("theme-injector: injector.js not found in bundle or common runtime paths")
+            }
         }
 
         // Inject a lightweight presence-check script that logs to the webview console so it's clear whether
