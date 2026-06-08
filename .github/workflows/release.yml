@@ -31,14 +31,19 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             -archivePath Ninji.xcarchive archive
 
-      - name: Export Archive
+      - name: Export Archive (copy .app from archive)
         run: |
           mkdir -p output
-          xcodebuild \
-            -exportArchive \
-            -archivePath Ninji.xcarchive \
-            -exportPath output \
-            -exportOptionsPlist ExportOptions.plist
+          APP_PATH="Ninji.xcarchive/Products/Applications/Ninji.app"
+          echo "Looking for built app at $APP_PATH"
+          if [ -d "$APP_PATH" ]; then
+            # Copy the .app into output for packaging (avoids needing exportArchive/signing)
+            ditto "$APP_PATH" "output/Ninji.app"
+          else
+            echo "ERROR: built app not found in archive"
+            ls -la Ninji.xcarchive || true
+            exit 1
+          fi
 
       - name: Create Distribution Package
         run: |
