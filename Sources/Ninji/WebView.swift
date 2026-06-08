@@ -297,6 +297,23 @@ final class WebViewManager: NSObject, WKScriptMessageHandler {
         if let injectorScript = makeInjectedResourceScript(named: "injector", fileExtension: "js", injectionTime: .atDocumentEnd) {
             configuration.userContentController.addUserScript(injectorScript)
         }
+
+        // Inject a lightweight presence-check script that logs to the webview console so it's clear whether
+        // the injector loaded at runtime. This always runs and helps debugging when the injector resource
+        // isn't found in the bundle or cwd.
+        let themePresenceScript = WKUserScript(source: """
+            (function(){
+                try {
+                    console.log('theme-loader: checking for theme injector...');
+                    if (window.__themeInjector) {
+                        console.log('theme-loader: __themeInjector present');
+                    } else {
+                        console.log('theme-loader: __themeInjector missing');
+                    }
+                } catch (e) { console.log('theme-loader error', e); }
+            })();
+        """, injectionTime: .atDocumentEnd, forMainFrameOnly: false)
+        configuration.userContentController.addUserScript(themePresenceScript)
         
         self.webView = WKWebView(frame: .zero, configuration: configuration)
         super.init()
