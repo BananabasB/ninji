@@ -66,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if response == .alertFirstButtonReturn {
                 let pasted = input.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard let url = URL(string: pasted) else { return }
-                resolveAndOpenSharedURL(url)
+                self.resolveAndOpenSharedURL(url)
             }
         }
     }
