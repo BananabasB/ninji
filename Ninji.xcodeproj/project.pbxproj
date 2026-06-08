@@ -10,6 +10,7 @@
 		195828492FD7133400E0410C /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 195828482FD7133400E0410C /* Sparkle */; };
 		1958284C2FD7137A00E0410C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1958284A2FD7137A00E0410C /* SettingsView.swift */; };
 		1958284D2FD7137A00E0410C /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1958284B2FD7137A00E0410C /* UpdaterController.swift */; };
+		1958284F2FD713F900E0410C /* appcast.example.xml in Resources */ = {isa = PBXBuildFile; fileRef = 1958284E2FD713F900E0410C /* appcast.example.xml */; };
 		E20000000000000000000002 /* Sources/Ninji/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000002 /* Sources/Ninji/ContentView.swift */; };
 		E20000000000000000000003 /* Sources/Ninji/DiscordRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* Sources/Ninji/DiscordRPC.swift */; };
 		E20000000000000000000004 /* Sources/Ninji/NinjiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */; };
@@ -20,6 +21,7 @@
 /* Begin PBXFileReference section */
 		1958284A2FD7137A00E0410C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = Sources/Ninji/SettingsView.swift; sourceTree = "<group>"; };
 		1958284B2FD7137A00E0410C /* UpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UpdaterController.swift; path = Sources/Ninji/UpdaterController.swift; sourceTree = "<group>"; };
+		1958284E2FD713F900E0410C /* appcast.example.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = appcast.example.xml; path = Sources/Ninji/appcast.example.xml; sourceTree = "<group>"; };
 		E10000000000000000000001 /* Ninji.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ninji.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10000000000000000000002 /* Sources/Ninji/ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/ContentView.swift; sourceTree = SOURCE_ROOT; };
 		E10000000000000000000003 /* Sources/Ninji/DiscordRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/DiscordRPC.swift; sourceTree = SOURCE_ROOT; };
@@ -64,6 +66,7 @@
 				E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */,
 				1958284A2FD7137A00E0410C /* SettingsView.swift */,
 				1958284B2FD7137A00E0410C /* UpdaterController.swift */,
+				1958284E2FD713F900E0410C /* appcast.example.xml */,
 				E10000000000000000000002 /* Sources/Ninji/ContentView.swift */,
 				E10000000000000000000005 /* Sources/Ninji/WebView.swift */,
 				E10000000000000000000003 /* Sources/Ninji/DiscordRPC.swift */,
@@ -142,6 +145,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1958284F2FD713F900E0410C /* appcast.example.xml in Resources */,
 				E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

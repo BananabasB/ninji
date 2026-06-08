@@ -2,74 +2,58 @@ import Sparkle
 import SwiftUI
 
 /// Handles Sparkle framework integration for automatic updates
-final class UpdaterController: ObservableObject {
+final class UpdaterController: NSObject, ObservableObject {
     static let shared = UpdaterController()
     
-    private let updaterController: SPUStandardUpdaterController
-    private let userDefaults: UserDefaults
-    
+    private var updater: SPUUpdater!
+    private var userDefaults: UserDefaults
+
     // App cast feed URL - GitHub Releases
     // Replace with your actual GitHub repo
     private let feedURL = URL(string: "https://github.com/BananabasB/ninji/releases/latest/download/appcast.xml")!
     
-    private init() {
+    override init() {
         // Use a custom UserDefaults suite for Sparkle to avoid conflicts
         userDefaults = UserDefaults(suiteName: "com.barnabasbodily.Ninji.sparkle") ?? .standard
         
-        // Configure updater
-        let configuration = SPUStandardUpdaterConfiguration(
-            appCastURL: feedURL,
-            userDefaults: userDefaults
-        )
+        super.init()
         
-        // Display settings
-        configuration.automaticallyChecksForUpdates = true
-        configuration.automaticallyDownloadsUpdates = false // Let users choose
-        configuration.showsUIForAutomaticCheckOnLaunch = true
-        configuration.prefersSparkleHostForAutomaticUpdates = true
-        
-        // For unsigned apps (no Developer Program), allow unsigned updates
-        // ⚠️ Security warning: This bypasses signature verification!
-        // Only use this for testing without Developer Program
-        configuration.ignoresSystemProxySettings = false
-        configuration.requiresSignatureVerification = false
-        
-        // Create the updater controller
-        updaterController = SPUStandardUpdaterController(
-            configuration: configuration,
-            delegate: nil,
-            userDriverDelegate: nil
+        // Create the updater
+        updater = SPUUpdater(
+            source: SPUAppcastSource(appCastURL: feedURL),
+            userDefaults: userDefaults,
+            delegate: self
         )
     }
     
     /// Start the updater - call this when the app launches
     func start() {
-        updaterController.start()
+        // Start checking for updates
+        updater.start()
     }
     
     /// Manually check for updates
     func checkForUpdates() {
-        updaterController.checkForUpdates()
+        updater.checkForUpdates()
     }
     
     /// Get the current version info
     var currentVersion: String? {
-        updaterController.updater.versionForUpdater
+        // Get the current version from Info.plist
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     }
 }
 
-/// Legacy AppDelegate wrapper for Sparkle compatibility
-class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
-    func updater(_ updater: SPUUpdater, performing action: SPUStandardUpdaterAction) {
-        // Handle different update actions
-        switch action {
-        case .downloading:
-            print("Starting download...")
-        case .installing:
-            print("Starting installation...")
-        default:
-            break
-        }
+// MARK: - Sparkle Delegate
+
+extension UpdaterController: SPUUpdaterDelegate {
+    
+    func updater(_ updater: SPUUpdater, willStartDownloadingUpdate update: SPUUpdate) {
+        print("Starting download of update: \(update.version)")
+    }
+    
+    func updater(_ updater: SPUUpdater, didDownloadUpdate update: SPUUpdate, at path: String) {
+        print("Update downloaded to: \(path)")
     }
     
     func updater(_ updater: SPUUpdater, didFailToDownloadUpdateWithError error: Error) {
@@ -85,6 +69,6 @@ class UpdaterDelegate: NSObject, SPUUpdaterDelegate {
     }
     
     func updater(_ updater: SPUUpdater, foundUpdate update: SPUUpdate) {
-        print("Update found: ", update.version)
+        print("Update found: \(update.version)")
     }
 }
