@@ -49,6 +49,9 @@
   let lastContent = null;
   let lastMappingsJson = null;
   let applyTimeout = null;
+  let applyCount = 0;
+  let observer = null;
+  const MAX_APPLY = 2; // after this number of real updates, stop observing to avoid loops
 
   const applyTheme = () => {
     const valueMap = buildValueMap();
@@ -74,6 +77,13 @@
     if(s.textContent === content) return;
     s.textContent = content;
 
+    applyCount++;
+    // If we've applied enough times, disconnect observer to prevent repeated reapplications
+    if(applyCount >= MAX_APPLY && observer) {
+      try { observer.disconnect(); } catch(e) {}
+      observer = null;
+    }
+
     // Runtime logging to help debug injection (only when changed)
     try{
       console.log(`theme-injector: applied ${Object.keys(theme).length} semantic tokens, ${styleLines.length} style rules`);
@@ -89,6 +99,7 @@
   };
 
   const scheduleApply = (delay = 120) => {
+    if(applyCount >= MAX_APPLY) return;
     if(applyTimeout) clearTimeout(applyTimeout);
     applyTimeout = setTimeout(() => { try{ applyTheme(); } catch(e){ console.error('theme-injector apply error', e); } applyTimeout = null; }, delay);
   };
@@ -101,8 +112,8 @@
   };
 
   safeApply();
-  const ob = new MutationObserver(() => scheduleApply());
-  ob.observe(document.documentElement, { attributes: true, childList: true, subtree: true });
+  observer = new MutationObserver(() => scheduleApply());
+  observer.observe(document.documentElement, { attributes: true, childList: true, subtree: true });
 
   // expose for debugging
   window.__themeInjector = { applyTheme, scheduleApply };
