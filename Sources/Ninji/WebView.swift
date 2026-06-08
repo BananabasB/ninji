@@ -21,14 +21,39 @@ private func makeInjectedStyleScript() -> WKUserScript {
 }
 
 private func makeInjectedResourceScript(named resourceName: String, fileExtension: String, injectionTime: WKUserScriptInjectionTime) -> WKUserScript? {
-    guard
-        let url = Bundle.main.url(forResource: resourceName, withExtension: fileExtension),
-        let source = try? String(contentsOf: url, encoding: .utf8)
-    else {
-        return nil
+    // Try bundle resource first
+    if let url = Bundle.main.url(forResource: resourceName, withExtension: fileExtension),
+       let source = try? String(contentsOf: url, encoding: .utf8) {
+        return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: false)
     }
 
-    return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: false)
+    // Fallback: try a resource at Bundle.resourceURL (e.g., themes/injector.js when bundled in a subdirectory)
+    if let resourceBase = Bundle.main.resourceURL {
+        let candidate = resourceBase.appendingPathComponent("\(resourceName).\(fileExtension)")
+        if FileManager.default.fileExists(atPath: candidate.path),
+           let source = try? String(contentsOf: candidate, encoding: .utf8) {
+            return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: false)
+        }
+
+        // Also try themes subdirectory
+        let themed = resourceBase.appendingPathComponent("themes/")
+            .appendingPathComponent("\(resourceName).\(fileExtension)")
+        if FileManager.default.fileExists(atPath: themed.path),
+           let source = try? String(contentsOf: themed, encoding: .utf8) {
+            return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: false)
+        }
+    }
+
+    // Development fallback: try loading from current working directory (useful when running from source)
+    let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+        .appendingPathComponent("themes/")
+        .appendingPathComponent("\(resourceName).\(fileExtension)")
+    if FileManager.default.fileExists(atPath: cwdCandidate.path),
+       let source = try? String(contentsOf: cwdCandidate, encoding: .utf8) {
+        return WKUserScript(source: source, injectionTime: injectionTime, forMainFrameOnly: false)
+    }
+
+    return nil
 }
 
 private func enableDeveloperExtras(on configuration: WKWebViewConfiguration) {
@@ -266,6 +291,11 @@ final class WebViewManager: NSObject, WKScriptMessageHandler {
 
         if let trackObserverScript = makeInjectedResourceScript(named: "TrackObserver", fileExtension: "js", injectionTime: .atDocumentEnd) {
             configuration.userContentController.addUserScript(trackObserverScript)
+        }
+
+        // Attempt to inject themes/injector.js (falls back to bundled or repo themes directory)
+        if let injectorScript = makeInjectedResourceScript(named: "injector", fileExtension: "js", injectionTime: .atDocumentEnd) {
+            configuration.userContentController.addUserScript(injectorScript)
         }
         
         self.webView = WKWebView(frame: .zero, configuration: configuration)
