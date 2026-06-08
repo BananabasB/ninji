@@ -5,29 +5,39 @@ import SwiftUI
 final class UpdaterController: NSObject, ObservableObject {
     static let shared = UpdaterController()
     
-    private var updater: SPUUpdater!
+    private let updaterController: SPUStandardUpdaterController
     
     // App cast feed URL - GitHub Releases
     // Replace with your actual GitHub repo
     private let feedURL = URL(string: "https://github.com/BananabasB/ninji/releases/latest/download/appcast.xml")!
     
     override init() {
-        super.init()
+        // Configure updater using Sparkle 2.x SPUStandardUpdaterConfiguration
+        let configuration = SPUStandardUpdaterConfiguration()
+        configuration.appCastURL = feedURL
         
-        // Create the updater - Sparkle 2.x uses SUAppcastSource
-        let source = SUAppcastSource(appCastURL: feedURL)
-        updater = SPUUpdater(source: source, delegate: self)
+        // For unsigned apps (no Developer Program)
+        configuration.requiresSignatureVerification = false
+        
+        // UI settings
+        configuration.automaticallyChecksForUpdates = true
+        configuration.automaticallyDownloadsUpdates = false
+        configuration.showsUIForAutomaticCheckOnLaunch = true
+        
+        // Create the updater controller
+        updaterController = SPUStandardUpdaterController(configuration: configuration, delegate: self)
+        
+        super.init()
     }
     
     /// Start the updater - call this when the app launches
     func start() {
-        // Start checking for updates
-        updater.start()
+        updaterController.start()
     }
     
     /// Manually check for updates
     func checkForUpdates() {
-        updater.checkForUpdates()
+        updaterController.checkForUpdates()
     }
     
     /// Get the current version info
@@ -39,25 +49,30 @@ final class UpdaterController: NSObject, ObservableObject {
 
 // MARK: - Sparkle Delegate
 
-extension UpdaterController: SUUpdaterDelegate {
+extension UpdaterController: SPUStandardUpdaterControllerDelegate {
     
     // Update found
-    func updater(_ updater: SUUpdater, foundUpdate update: SUUpdate) {
+    func updaterController(_ controller: SPUStandardUpdaterController, didFindUpdate update: SPUUpdate) {
         print("Update found: \(update.version)")
     }
     
     // No update found
-    func updaterDidNotFindUpdate(_ updater: SUUpdater) {
+    func updaterControllerDidNotFindUpdate(_ controller: SPUStandardUpdaterController) {
         print("No update found")
     }
     
     // Download failed
-    func updater(_ updater: SUUpdater, failedToDownloadUpdate update: SUUpdate, withError error: Error) {
+    func updaterController(_ controller: SPUStandardUpdaterController, failedToDownloadUpdate update: SPUUpdate, error: Error) {
         print("Download failed: ", error.localizedDescription)
     }
     
     // Installation failed  
-    func updater(_ updater: SUUpdater, failedToInstallUpdate update: SUUpdate, withError error: Error) {
+    func updaterController(_ controller: SPUStandardUpdaterController, failedToInstallUpdate update: SPUUpdate, error: Error) {
         print("Installation failed: ", error.localizedDescription)
+    }
+    
+    // Optional: user wants to install after download
+    func updaterControllerDidFinishDownloadingUpdate(_ controller: SPUStandardUpdaterController) {
+        print("Update downloaded, ready to install")
     }
 }
