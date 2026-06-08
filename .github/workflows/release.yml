@@ -1,0 +1,137 @@
+name: Build and Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build:
+    name: Build and Deploy
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest
+
+      - name: Cache Build Files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/Library/Caches/com.apple.dt.Xcode
+            DerivedData
+          key: ${{ runner.os }}-xcode-build-${{ hashFiles('Sources/**/*.swift', 'Ninji.xcodeproj/project.pbxproj') }}
+          restore-keys: |
+            ${{ runner.os }}-xcode-build-
+
+      - name: Build for Release
+        run: |
+          xcodebuild \
+            -project Ninji.xcodeproj \
+            -scheme Ninji \
+            -configuration Release \
+            -destination 'platform=macOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            -archivePath Ninji.xcarchive archive
+
+      - name: Export Archive
+        run: |
+          mkdir -p output
+          xcodebuild \
+            -exportArchive \
+            -archivePath Ninji.xcarchive \
+            -exportPath output \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Create Distribution Package
+        run: |
+          cd output
+          # Create ZIP of the app
+          ditto -c -k --sequesterRsrc --keepParent Ninji.app Ninji-${{ github.ref_name }}.zip
+          # Go back to root
+          cd ..
+
+      - name: Setup Python for Generating AppCast
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies for AppCast Generation
+        run: |
+          pip install lxml
+
+      - name: Generate AppCast XML
+        id: appcast
+        run: |
+          # Get the current date in RFC 2822 format
+          PublishDate=$(date -u +"%a, %d %b %Y %H:%M:%S GMT")
+          
+          # Extract version from tag (remove 'v' prefix)
+          VERSION=${GITHUB_REF_NAME#v}
+          
+          # Get file size
+          ZIP_FILE="output/Ninji-${{ github.ref_name }}.zip"
+          FILE_SIZE=$(stat -f%z "$ZIP_FILE")
+          
+          # Create appcast directory
+          mkdir -p deploy
+          
+          # Create appcast.xml with proper Sparkle namespaces
+          cat > deploy/appcast.xml << EOF
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+    <channel>
+        <title>Ninji</title>
+        <description>Nintendo Music desktop wrapper</description>
+        <language>en</language>
+        <item>
+            <title>Version ${VERSION}</title>
+            <pubDate>${PublishDate}</pubDate>
+            <sparkle:version>${VERSION}</sparkle:version>
+            <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
+            <description>
+                <![CDATA[
+                    <h1>Ninji ${VERSION}</h1>
+                    <p>Release ${{ github.ref_name }}</p>
+                    <p>Built from commit ${{ github.sha }}</p>
+                ]]>
+            </description>
+            <enclosure 
+                url="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/Ninji-${{ github.ref_name }}.zip" 
+                length="${FILE_SIZE}" 
+                type="application/octet-stream" 
+                sparkle:editable="true"/>
+        </item>
+    </channel>
+</rss>
+EOF
+          
+          # Output the appcast for upload
+          echo "appcast_path=deploy/appcast.xml" >> $GITHUB_OUTPUT
+          echo "zip_path=$ZIP_FILE" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            output/Ninji-${{ github.ref_name }}.zip
+            deploy/appcast.xml
+          name: ${{ github.ref_name }}
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy AppCast to GitHub Pages (Optional)
+        if: false  # Enable if you want to use Pages instead of Releases
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          destination_dir:appcast

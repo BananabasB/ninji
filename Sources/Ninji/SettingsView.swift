@@ -20,8 +20,13 @@ struct SettingsView: View {
                 .tabItem {
                     Label("Discord", systemImage: "bubble.left.and.bubble.right")
                 }
+            
+            UpdatesSettingsView()
+                .tabItem {
+                    Label("Updates", systemImage: "arrow.triangle.2.circlepath")
+                }
         }
-        .frame(width: 450, height: 250)
+        .frame(width: 450, height: 200)
     }
 }
 
@@ -71,6 +76,61 @@ struct DiscordSettingsView: View {
             Text("Discord RPC integration is under development.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+        }
+    }
+}
+
+struct UpdatesSettingsView: View {
+    @State private var currentVersion: String = "Unknown"
+    @State private var isChecking = false
+    @State private var checkMessage: String? = nil
+
+    var body: some View {
+        VStack(spacing: 10) {
+            VStack(spacing: 2) {
+                Text("Ninji Updater")
+                    .font(.headline)
+                Text("Version: \(currentVersion)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            if isChecking {
+                ProgressView()
+                    .controlSize(.small)
+            }
+            
+            if let message = checkMessage {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            
+            Button(action: checkForUpdates) {
+                Text("Check for Updates")
+                    .frame(maxWidth: .infinity)
+            }
+            .disabled(isChecking)
+            
+            Text("Automatic updates enabled")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .onAppear {
+            currentVersion = UpdaterController.shared.currentVersion ?? "Unknown"
+        }
+    }
+    
+    private func checkForUpdates() {
+        isChecking = true
+        checkMessage = nil
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            UpdaterController.shared.checkForUpdates()
+            isChecking = false
+            checkMessage = "Checked for updates"
         }
     }
 }
