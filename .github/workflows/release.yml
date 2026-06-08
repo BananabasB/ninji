@@ -51,16 +51,27 @@ jobs:
 
       - name: Create Distribution Package
         run: |
-          cd output
-          # Create ZIP of the app
-          ditto -c -k --sequesterRsrc --keepParent Ninji.app Ninji-${{ github.ref_name }}.zip
+          # Ensure output exists
+          mkdir -p output
 
-          # Create compressed DMG (UDZO)
-          # Uses hdiutil to package the app; unsigned. Adjust signing as needed.
-          hdiutil create -volname "Ninji" -srcfolder Ninji.app -ov -format UDZO Ninji-${{ github.ref_name }}.dmg
+          # Create ZIP of the app (used by appcast and releases)
+          ditto -c -k --sequesterRsrc --keepParent output/Ninji.app output/Ninji-${{ github.ref_name }}.zip
 
-          # Go back to root
-          cd ..
+          # Create a user-friendly DMG without a background image (icons only)
+          # Use npx to run create-dmg without requiring global install
+          # Coordinates are non-retina: icon 128px at (140,120), Applications link at (420,120)
+          npx --yes create-dmg "output/Ninji.app" \
+            --overwrite \
+            --out output \
+            --icon-size 128 \
+            --icon "Ninji.app" 140 120 \
+            --app-drop-link 420 120 \
+            || {
+              echo "create-dmg failed; falling back to hdiutil"
+              cd output
+              hdiutil create -volname "Ninji" -srcfolder Ninji.app -ov -format UDZO Ninji-${{ github.ref_name }}.dmg
+              cd ..
+            }
 
       - name: Setup Python for Generating AppCast
         uses: actions/setup-python@v5
