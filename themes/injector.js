@@ -54,15 +54,27 @@
     for(const [k,v] of Object.entries(theme)) styleLines.push(`${k}: ${v} !important`);
 
     // for each semantic token, find any existing hashed vars that match the same computed value
+    const mappings = {};
     for(const [token, val] of Object.entries(theme)){
       const norm = normalize(val);
       const vars = valueMap[norm] || [];
+      mappings[token] = vars.slice();
       for(const hv of vars) styleLines.push(`${hv}: var(${token}) !important`);
     }
 
     let s = document.getElementById('theme-injector');
     if(!s){ s = document.createElement('style'); s.id = 'theme-injector'; document.head.appendChild(s); }
     s.textContent = `:root{${styleLines.join(';')}}`;
+
+    // Runtime logging to help debug injection
+    try{
+      console.log(`theme-injector: applied ${Object.keys(theme).length} semantic tokens, ${styleLines.length} style rules`);
+      let anyMatched = false;
+      for(const [token, vars] of Object.entries(mappings)){
+        if(vars.length) { anyMatched = true; console.log(`theme-injector: ${token} mapped to: ${vars.join(', ')}`); }
+      }
+      if(!anyMatched) console.log('theme-injector: no hashed variables matched by color — semantic tokens added only');
+    }catch(e){ /* ignore logging errors */ }
   };
 
   const safeApply = () => {
