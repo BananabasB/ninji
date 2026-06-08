@@ -9,10 +9,15 @@ let package = Package(
     products: [
         .executable(name: "Ninji", targets: ["Ninji"])
     ],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle.git", from: "2.5.0")
+    ],
     targets: [
         .executableTarget(
             name: "Ninji",
-            dependencies: [],
+            dependencies: [
+                .product(name: "Sparkle", package: "Sparkle")
+            ],
             path: "Sources/Ninji",
             resources: [
                 .process("TrackObserver.js")
