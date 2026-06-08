@@ -85,9 +85,12 @@ For signed releases, you'll need:
 
 ## 📋 Requirements
 
-- **macOS 14+** runner (Xcode 15+)
+- **macOS latest** runner (macos-latest)
+- **Xcode latest** (automatically installed)
 - **Swift 5.9+**
 - **GitHub Releases** enabled for the repository
+
+> **Note:** The workflow uses `macos-latest` and `xcode-version: latest` to target the newest available macOS (26) and Xcode (26) on GitHub Actions.
 
 ## 🔄 Customization
 
