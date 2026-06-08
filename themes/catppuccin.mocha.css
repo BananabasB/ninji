@@ -1,0 +1,16 @@
+/* themes/catppuccin.mocha.css
+ * Canonical semantic tokens for a Catppuccin Mocha sample theme.
+ * Use as a reference or load into the webview host before the injector runs.
+ */
+:root {
+  --color-bg: #1E1E2E;
+  --color-surface: #11111B;
+  --color-muted: #7287A1;
+  --color-text: #CAD3F5;
+  --color-primary: #89B4FA;
+  --color-accent: #94E2D5;
+  --color-success: #ABE9B3;
+  --color-warning: #F9E2AF;
+  --color-danger: #F38BA8;
+  --color-border: #313244;
+}
