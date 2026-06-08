@@ -83,7 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     return
                 }
 
-                let pattern = "<a[^>]*class=\\\"[^\\\"]*_17osqud9[^\\\"]*\\\"[^>]*href=\\\"([^"]+)\\\""
+                let pattern = #"<a[^>]*class="[^"]*_17osqud9[^"]*"[^>]*href="([^"]+)""#
                 if let re = try? NSRegularExpression(pattern: pattern, options: []),
                    let m = re.firstMatch(in: html, options: [], range: NSRange(html.startIndex..., in: html)),
                    m.numberOfRanges >= 2,
