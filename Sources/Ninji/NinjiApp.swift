@@ -16,6 +16,15 @@ struct NinjiApp: App {
         Settings {
             SettingsView()
         }
+
+        .commands {
+            CommandMenu("Ninji") {
+                Button("Open Shared Playlist…") {
+                    appDelegate.openSharedPlaylist()
+                }
+                .keyboardShortcut("O", modifiers: [.command, .shift])
+            }
+        }
     }
 }
 
@@ -36,6 +45,78 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.activate(ignoringOtherApps: true)
         }
         return true
+    }
+
+    // Prompt for a Nintendo Music share URL, resolve it if necessary, and open in the app's web view
+    func openSharedPlaylist() {
+        DispatchQueue.main.async {
+            let alert = NSAlert()
+            alert.messageText = "Open Shared Playlist"
+            alert.informativeText = "Paste a Nintendo Music sharing link or a user-playlist URL:"
+            alert.alertStyle = .informational
+
+            let input = NSTextField(frame: NSRect(x: 0, y: 0, width: 480, height: 24))
+            input.stringValue = ""
+            alert.accessoryView = input
+
+            alert.addButton(withTitle: "Open")
+            alert.addButton(withTitle: "Cancel")
+
+            let response = alert.runModal()
+            if response == .alertFirstButtonReturn {
+                let pasted = input.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let url = URL(string: pasted) else { return }
+                resolveAndOpenSharedURL(url)
+            }
+        }
+    }
+
+    private func resolveAndOpenSharedURL(_ url: URL) {
+        // If it's a Nintendo share URL, fetch and extract the inner href
+        if let host = url.host, host.contains("share.music.nintendo.com") || host.contains("share.music.nintendo") {
+            let task = URLSession.shared.dataTask(with: url) { data, _, _ in
+                guard let data = data, let html = String(data: data, encoding: .utf8) else {
+                    DispatchQueue.main.async {
+                        WebViewManager.shared.webView.load(URLRequest(url: url))
+                        NSApp.activate(ignoringOtherApps: true)
+                    }
+                    return
+                }
+
+                let pattern = "<a[^>]*class=\\\"[^\\\"]*_17osqud9[^\\\"]*\\\"[^>]*href=\\\"([^"]+)\\\""
+                if let re = try? NSRegularExpression(pattern: pattern, options: []),
+                   let m = re.firstMatch(in: html, options: [], range: NSRange(html.startIndex..., in: html)),
+                   m.numberOfRanges >= 2,
+                   let r = Range(m.range(at: 1), in: html) {
+                    let href = String(html[r])
+                    var finalURL = URL(string: href)
+                    if finalURL == nil && href.hasPrefix("/") {
+                        finalURL = URL(string: "https://music.nintendo.com" + href)
+                    }
+
+                    if let final = finalURL {
+                        DispatchQueue.main.async {
+                            WebViewManager.shared.webView.load(URLRequest(url: final))
+                            NSApp.activate(ignoringOtherApps: true)
+                        }
+                        return
+                    }
+                }
+
+                // Fallback: open the original URL
+                DispatchQueue.main.async {
+                    WebViewManager.shared.webView.load(URLRequest(url: url))
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
+            task.resume()
+        } else {
+            // Directly open provided URL
+            DispatchQueue.main.async {
+                WebViewManager.shared.webView.load(URLRequest(url: url))
+                NSApp.activate(ignoringOtherApps: true)
+            }
+        }
     }
 }
 
