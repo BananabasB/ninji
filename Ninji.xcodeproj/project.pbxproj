@@ -16,6 +16,7 @@
 		E20000000000000000000004 /* Sources/Ninji/NinjiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */; };
 		E20000000000000000000005 /* Sources/Ninji/WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000005 /* Sources/Ninji/WebView.swift */; };
 		E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000006 /* Sources/Ninji/TrackObserver.js */; };
+		E20000000000000000000008 /* Sources/Ninji/injector.js in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000008 /* Sources/Ninji/injector.js */; };
 		E20000000000000000000007 /* Ninji.icon in Resources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000007 /* Ninji.icon */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/NinjiApp.swift; sourceTree = SOURCE_ROOT; };
 		E10000000000000000000005 /* Sources/Ninji/WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/Ninji/WebView.swift; sourceTree = SOURCE_ROOT; };
 		E10000000000000000000006 /* Sources/Ninji/TrackObserver.js */ = {isa = PBXFileReference; lastKnownFileType = text.javascript; path = Sources/Ninji/TrackObserver.js; sourceTree = SOURCE_ROOT; };
+		E10000000000000000000008 /* Sources/Ninji/injector.js */ = {isa = PBXFileReference; lastKnownFileType = text.javascript; path = Sources/Ninji/injector.js; sourceTree = SOURCE_ROOT; };
 		E10000000000000000000007 /* Ninji.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.icon; path = Ninji.icon; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -79,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				E10000000000000000000006 /* Sources/Ninji/TrackObserver.js */,
+				E10000000000000000000008 /* Sources/Ninji/injector.js */,
 				E10000000000000000000007 /* Ninji.icon */,
 			);
 			name = Resources;
@@ -148,6 +151,7 @@
 			files = (
 				1958284F2FD713F900E0410C /* appcast.example.xml in Resources */,
 				E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */,
+				E20000000000000000000008 /* Sources/Ninji/injector.js in Resources */,
 				E20000000000000000000007 /* Ninji.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
