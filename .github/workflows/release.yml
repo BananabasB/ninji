@@ -120,4 +120,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
-          destination_dir:appcast
+          destination_dir: appcast
