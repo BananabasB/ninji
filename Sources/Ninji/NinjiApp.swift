@@ -1,5 +1,4 @@
 import SwiftUI
-import Sparkle
 
 @main
 struct NinjiApp: App {
@@ -36,8 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Start Discord RPC
         DiscordRPC.shared.startIfNeeded()
         
-        // Start Sparkle updater
-        UpdaterController.shared.start()
+        // Check for updates on launch (background)
+        UpdaterController.shared.checkForUpdates()
     }
     
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

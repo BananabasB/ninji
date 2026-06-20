@@ -56,20 +56,8 @@ jobs:
               /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $VERSION" "$INFO_PLIST" || true
             fi
 
-            # Ad-hoc sign the app so Sparkle can operate (no Apple Developer account required)
+            # Ad-hoc sign the app (no Sparkle framework to worry about on macOS 26+)
             echo "Ad-hoc signing output/Ninji.app"
-            # Sparkle ships as a pre-built binary target signed with its own Team ID.
-            # macOS 26+ dyld enforces Team ID consistency across all loaded binaries.
-            # We must strip Sparkle's original signature and re-sign everything ad-hoc.
-            SPARKLE_EXE="output/Ninji.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle"
-            SPARKLE_FW="output/Ninji.app/Contents/Frameworks/Sparkle.framework"
-            if [ -f "$SPARKLE_EXE" ]; then
-                codesign --remove-signature "$SPARKLE_EXE" 2>/dev/null || true
-                codesign --remove-signature "$SPARKLE_FW" 2>/dev/null || true
-                # Sign inside-out: binary first, then framework bundle, then app
-                codesign --force --options runtime --sign - "$SPARKLE_EXE"
-                codesign --force --options runtime --sign - "$SPARKLE_FW"
-            fi
             codesign --force --options runtime --sign - "output/Ninji.app"
             codesign --verify --deep --strict --verbose=4 "output/Ninji.app"
 
@@ -103,62 +91,13 @@ jobs:
               cd ..
             }
 
-      - name: Setup Python for Generating AppCast
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Dependencies for AppCast Generation
-        run: |
-          pip install lxml
-
-      - name: Generate AppCast XML
-        id: appcast
-        run: |
-          # Determine tag name and version (strip refs/tags/ prefix)
-          REF_NAME=${GITHUB_REF#refs/tags/}
-          VERSION=${REF_NAME#v}
-
-          # Paths
-          ZIP_FILE="output/Ninji-${REF_NAME}.zip"
-          DMG_FILE="output/Ninji-${REF_NAME}.dmg"
-
-          # Get file size if zip exists (may be created later in workflow)
-          if [ -f "$ZIP_FILE" ]; then
-            FILE_SIZE=$(stat -f%z "$ZIP_FILE")
-          else
-            FILE_SIZE=0
-          fi
-
-          mkdir -p deploy
-
-          # Use base64-encoded Python script to avoid YAML heredoc/implicit-key parsing issues
-          PYTHON_B64="aW1wb3J0IHN5cwpmcm9tIGRhdGV0aW1lIGltcG9ydCBkYXRldGltZQp2ZXJzaW9uLCByZWYsIGZpbGVfc2l6ZSwgcmVwbywgc2hhID0gc3lzLmFyZ3ZbMTo2XQpwdWJkYXRlID0gZGF0ZXRpbWUudXRjbm93KCkuc3RyZnRpbWUoIiVhLCAlZCAlYiAlWSAlSDolTTolUyBHTVQiKQpjb250ZW50ID0gZicnJzw/eG1sIHZlcnNpb249IjEuMCIgZW5jb2Rpbmc9InV0Zi04Ij8+Cjxyc3MgdmVyc2lvbj0iMi4wIiB4bWxuczpzcGFya2xlPSJodHRwOi8vd3d3LmFuZHltYXR1c2NoYWsub3JnL3htbC1uYW1lc3BhY2VzL3NwYXJrbGUiPgogICAgPGNoYW5uZWw+CiAgICAgICAgPHRpdGxlPk5pbmppPC90aXRsZT4KICAgICAgICA8ZGVzY3JpcHRpb24+TmludGVuZG8gTXVzaWMgZGVza3RvcCB3cmFwcGVyPC9kZXNjcmlwdGlvbj4KICAgICAgICA8bGFuZ3VhZ2U+ZW48L2xhbmd1YWdlPgogICAgICAgIDxpdGVtPgogICAgICAgICAgICA8dGl0bGU+VmVyc2lvbiB7dmVyc2lvbn08L3RpdGxlPgogICAgICAgICAgICA8cHViRGF0ZT57cHViZGF0ZX08L3B1YkRhdGU+CiAgICAgICAgICAgIDxzcGFya2xlOnZlcnNpb24+e3ZlcnNpb259PC9zcGFya2xlOnZlcnNpb24+CiAgICAgICAgICAgIDxzcGFya2xlOnNob3J0VmVyc2lvblN0cmluZz57dmVyc2lvbn08L3NwYXJrbGU6c2hvcnRWZXJzaW9uU3RyaW5nPgogICAgICAgICAgICA8ZGVzY3JpcHRpb24+CiAgICAgICAgICAgICAgICA8IVtDREFUQVsKICAgICAgICAgICAgICAgICAgICA8aDE+Tmluamkge3ZlcnNpb259PC9oMT4KICAgICAgICAgICAgICAgICAgICA8cD5SZWxlYXNlIHtyZWZ9PC9wPgogICAgICAgICAgICAgICAgICAgIDxwPkJ1aWx0IGZyb20gY29tbWl0IHtzaGF9PC9wPgogICAgICAgICAgICAgICAgXV0+CiAgICAgICAgICAgIDwvZGVzY3JpcHRpb24+CiAgICAgICAgICAgIDxlbmNsb3N1cmUgCiAgICAgICAgICAgICAgICB1cmw9Imh0dHBzOi8vZ2l0aHViLmNvbS97cmVwb30vcmVsZWFzZXMvZG93bmxvYWQve3JlZn0vTmluamkte3JlZn0uemlwIiAKICAgICAgICAgICAgICAgIGxlbmd0aD0ie2ZpbGVfc2l6ZX0iIAogICAgICAgICAgICAgICAgdHlwZT0iYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtIiAKICAgICAgICAgICAgICAgIHNwYXJrbGU6ZWRpdGFibGU9InRydWUiLz4KICAgICAgICA8L2l0ZW0+CiAgICA8L2NoYW5uZWw+CjwvcnNzPgonJycKb3BlbignZGVwbG95L2FwcGNhc3QueG1sJywndycsIGVuY29kaW5nPSd1dGYtOCcpLndyaXRlKGNvbnRlbnQpCg=="
-          echo "$PYTHON_B64" | base64 --decode > /tmp/generate_appcast.py
-          python3 /tmp/generate_appcast.py "$VERSION" "$REF_NAME" "$FILE_SIZE" "$GITHUB_REPOSITORY" "$GITHUB_SHA"
-
-          # Expose outputs for subsequent steps
-          echo "appcast_path=deploy/appcast.xml" >> $GITHUB_OUTPUT
-          echo "zip_path=$ZIP_FILE" >> $GITHUB_OUTPUT
-          echo "dmg_path=$DMG_FILE" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         with:
           files: |
             output/Ninji-${{ github.ref_name }}.zip
             output/Ninji-${{ github.ref_name }}.dmg
-            deploy/appcast.xml
           name: ${{ github.ref_name }}
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy AppCast to GitHub Pages (Optional)
-        if: false  # Enable if you want to use Pages instead of Releases
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./deploy
-          destination_dir: appcast

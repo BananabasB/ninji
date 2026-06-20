@@ -81,9 +81,9 @@ struct DiscordSettingsView: View {
 }
 
 struct UpdatesSettingsView: View {
+    @StateObject private var updater = UpdaterController.shared
     @State private var currentVersion: String = "Unknown"
-    @State private var isChecking = false
-    @State private var checkMessage: String? = nil
+    @State private var statusMessage: String? = nil
 
     var body: some View {
         VStack(spacing: 10) {
@@ -94,43 +94,51 @@ struct UpdatesSettingsView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
-            if isChecking {
+
+            if updater.isChecking {
                 ProgressView()
                     .controlSize(.small)
             }
-            
-            if let message = checkMessage {
+
+            if let message = statusMessage {
                 Text(message)
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
             }
-            
-            Button(action: checkForUpdates) {
-                Text("Check for Updates")
-                    .frame(maxWidth: .infinity)
+
+            if updater.updateAvailable {
+                Button(action: updater.openReleasePage) {
+                    Text("Download v\(updater.latestVersion ?? "")")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+            } else {
+                Button(action: checkForUpdates) {
+                    Text("Check for Updates")
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(updater.isChecking)
             }
-            .disabled(isChecking)
-            
-            Text("Automatic updates enabled")
-                .font(.caption)
-                .foregroundColor(.secondary)
         }
         .padding()
         .onAppear {
-            currentVersion = UpdaterController.shared.currentVersion ?? "Unknown"
+            currentVersion = updater.currentVersion ?? "Unknown"
         }
     }
-    
+
     private func checkForUpdates() {
-        isChecking = true
-        checkMessage = nil
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            UpdaterController.shared.checkForUpdates()
-            isChecking = false
-            checkMessage = "Checked for updates"
+        statusMessage = nil
+        updater.checkForUpdates()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            if let err = updater.errorMessage {
+                statusMessage = err
+            } else if updater.updateAvailable {
+                statusMessage = "Version \(updater.latestVersion ?? "") is available!"
+            } else {
+                statusMessage = "You're up to date"
+            }
         }
     }
 }

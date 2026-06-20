@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		195828492FD7133400E0410C /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 195828482FD7133400E0410C /* Sparkle */; };
 		1958284C2FD7137A00E0410C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1958284A2FD7137A00E0410C /* SettingsView.swift */; };
 		1958284D2FD7137A00E0410C /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1958284B2FD7137A00E0410C /* UpdaterController.swift */; };
-		1958284F2FD713F900E0410C /* appcast.example.xml in Resources */ = {isa = PBXBuildFile; fileRef = 1958284E2FD713F900E0410C /* appcast.example.xml */; };
 		E20000000000000000000002 /* Sources/Ninji/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000002 /* Sources/Ninji/ContentView.swift */; };
 		E20000000000000000000003 /* Sources/Ninji/DiscordRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000003 /* Sources/Ninji/DiscordRPC.swift */; };
 		E20000000000000000000004 /* Sources/Ninji/NinjiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000004 /* Sources/Ninji/NinjiApp.swift */; };
@@ -37,7 +35,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				195828492FD7133400E0410C /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,7 +127,6 @@
 			mainGroup = E00000000000000000000009;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				195828472FD7133400E0410C /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = E0000000000000000000000A /* Products */;
 			projectDirPath = "";
@@ -146,7 +142,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1958284F2FD713F900E0410C /* appcast.example.xml in Resources */,
 				E20000000000000000000006 /* Sources/Ninji/TrackObserver.js in Resources */,
 				E20000000000000000000007 /* Ninji.icon in Resources */,
 			);
@@ -315,22 +310,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		195828472FD7133400E0410C /* XCRemoteSwiftPackageReference "Sparkle" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.9.3;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		195828482FD7133400E0410C /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 195828472FD7133400E0410C /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
-		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E00000000000000000000001 /* Project object */;
