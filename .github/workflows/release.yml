@@ -69,21 +69,15 @@ jobs:
 
       - name: Create Distribution Package
         run: |
-          # Ensure output exists
           mkdir -p output
 
           # Create ZIP of the app (used by appcast and releases)
           ditto -c -k --sequesterRsrc --keepParent output/Ninji.app output/Ninji-${{ github.ref_name }}.zip
 
-          # Create a user-friendly DMG without a background image (icons only)
-          # Use npx to run create-dmg without requiring global install
-          # Coordinates are non-retina: icon 128px at (140,120), Applications link at (420,120)
+          # Create a user-friendly DMG (auto-positions icon and Applications link)
           npx --yes create-dmg "output/Ninji.app" \
             --overwrite \
-            --out output \
-            --icon-size 128 \
-            --icon "Ninji.app" 140 120 \
-            --app-drop-link 420 120 \
+            --dmg-title="Ninji" \
             || {
               echo "create-dmg failed; falling back to hdiutil"
               cd output
