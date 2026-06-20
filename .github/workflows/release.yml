@@ -77,6 +77,7 @@ jobs:
           # Create a user-friendly DMG (auto-positions icon and Applications link)
           npx --yes create-dmg "output/Ninji.app" \
             --overwrite \
+            --no-code-sign \
             --dmg-title="Ninji" \
             || {
               echo "create-dmg failed; falling back to hdiutil"
