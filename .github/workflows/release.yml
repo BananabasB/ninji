@@ -58,8 +58,20 @@ jobs:
 
             # Ad-hoc sign the app so Sparkle can operate (no Apple Developer account required)
             echo "Ad-hoc signing output/Ninji.app"
-            codesign --force --deep --options runtime --sign - "output/Ninji.app" || true
-            codesign --verify --deep --strict --verbose=4 "output/Ninji.app" || true
+            # Sparkle ships as a pre-built binary target signed with its own Team ID.
+            # macOS 26+ dyld enforces Team ID consistency across all loaded binaries.
+            # We must strip Sparkle's original signature and re-sign everything ad-hoc.
+            SPARKLE_EXE="output/Ninji.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle"
+            SPARKLE_FW="output/Ninji.app/Contents/Frameworks/Sparkle.framework"
+            if [ -f "$SPARKLE_EXE" ]; then
+                codesign --remove-signature "$SPARKLE_EXE" 2>/dev/null || true
+                codesign --remove-signature "$SPARKLE_FW" 2>/dev/null || true
+                # Sign inside-out: binary first, then framework bundle, then app
+                codesign --force --options runtime --sign - "$SPARKLE_EXE"
+                codesign --force --options runtime --sign - "$SPARKLE_FW"
+            fi
+            codesign --force --options runtime --sign - "output/Ninji.app"
+            codesign --verify --deep --strict --verbose=4 "output/Ninji.app"
 
           else
             echo "ERROR: built app not found in archive"
